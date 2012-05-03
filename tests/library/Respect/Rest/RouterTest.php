@@ -361,6 +361,18 @@ namespace Respect\Rest {
             $r->dispatch('get', '/documents/foo/bar')->response();
             $this->assertEquals(array(array('foo', 'bar')), $args);
         }
+
+        /**
+         * @ticket 46
+         */
+        function test_is_callable_bug_in_php_53()
+        {
+            $foo        = new Foo();
+            $methodCall = array($foo, 'getBar');
+
+            if (is_callable($methodCall))
+                $this->assertEquals('bar',$methodCall('bar'));
+        }
         
     }
 
@@ -383,7 +395,17 @@ namespace Respect\Rest {
 
         $header[$string] = $string;
     }
+
+    class Foo
+    {
+        public function getBar($bar)
+        {
+            return $bar;
+        }
+    }
 }
+
+
 
 namespace {
     $header=array();
